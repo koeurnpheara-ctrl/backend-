@@ -25,6 +25,8 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 
 The store administration dashboard is available at `/admin`. It uses the storefront's olive and cream palette and displays product, customer, order, delivered-revenue, and low-stock summaries. Administrators can create, search, update, and delete products, including uploading product images.
 
+The storefront reads active products and their categories from `/api/products` and `/api/categories`. Set `FRONTEND_URL` in the backend `.env` to the exact public origin of the storefront so browser requests are allowed by CORS.
+
 Set these values in `.env` before seeding. Use a unique password with at least 12 characters:
 
 ```env
@@ -43,6 +45,8 @@ docker compose exec app php artisan storage:link
 ```
 
 Open `/admin/login` on the backend server and sign in with the configured administrator email and password. Do not commit `.env` or share the administrator password.
+
+For the React storefront, set `VITE_API_BASE_URL=http://16.179.39.203:8000/api` in its `.env` before building it.
 
 ## Learning Laravel
 

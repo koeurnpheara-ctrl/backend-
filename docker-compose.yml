@@ -20,6 +20,7 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
       FILESYSTEM_DISK: ${FILESYSTEM_DISK:-public}
+      FRONTEND_URL: ${FRONTEND_URL:-http://16.176.28.191}
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
