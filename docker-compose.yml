@@ -1,0 +1,99 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce_admin_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ecommerce_admin_vendor:/var/www/html/vendor
+      - ecommerce_admin_storage:/var/www/html/storage
+    environment:
+      APP_NAME: "E-commerce Admin"
+      APP_ENV: local
+      APP_KEY: ${APP_KEY:-}
+      APP_DEBUG: ${APP_DEBUG:-true}
+      APP_URL: ${APP_URL:-http://localhost:8000}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${MYSQL_DATABASE:-ecommerce}
+      DB_USERNAME: ${MYSQL_USER:-ecommerce}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-ecommerce_secret}
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ecommerce_admin_network
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: ecommerce_admin_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - ecommerce_admin_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: ecommerce_admin_mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-ecommerce}
+      MYSQL_USER: ${MYSQL_USER:-ecommerce}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-ecommerce_secret}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_secret}
+    volumes:
+      - ecommerce_admin_mysql:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -p$${MYSQL_ROOT_PASSWORD} --silent",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - ecommerce_admin_network
+
+  phpmyadmin:
+    image: phpmyadmin:5-apache
+    container_name: ecommerce_admin_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: ${MYSQL_USER:-ecommerce}
+      PMA_PASSWORD: ${MYSQL_PASSWORD:-ecommerce_secret}
+      UPLOAD_LIMIT: 64M
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ecommerce_admin_network
+
+volumes:
+  ecommerce_admin_mysql:
+  ecommerce_admin_vendor:
+  ecommerce_admin_storage:
+
+networks:
+  ecommerce_admin_network:
+    driver: bridge
