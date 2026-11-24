@@ -21,6 +21,29 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Form & Field admin dashboard
+
+The store administration dashboard is available at `/admin`. It uses the storefront's olive and cream palette and displays product, customer, order, delivered-revenue, and low-stock summaries. Administrators can create, search, update, and delete products, including uploading product images.
+
+Set these values in `.env` before seeding. Use a unique password with at least 12 characters:
+
+```env
+ADMIN_NAME="Store Administrator"
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=replace-with-a-private-password
+```
+
+After editing `.env`, recreate the app service so Docker passes the new administrator settings to Laravel:
+
+```bash
+docker compose up -d --force-recreate app
+docker compose exec app php artisan migrate --force
+docker compose exec app php artisan db:seed --force
+docker compose exec app php artisan storage:link
+```
+
+Open `/admin/login` on the backend server and sign in with the configured administrator email and password. Do not commit `.env` or share the administrator password.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
