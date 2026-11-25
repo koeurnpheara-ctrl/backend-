@@ -27,6 +27,8 @@ The store administration dashboard is available at `/admin`. It uses the storefr
 
 The storefront reads active products and their categories from `/api/products` and `/api/categories`. Set `FRONTEND_URL` in the backend `.env` to the exact public origin of the storefront so browser requests are allowed by CORS.
 
+Docker Compose requires a non-empty `APP_KEY` in the project `.env` before starting the app. Keep the same key across restarts and deployments; do not commit or share it.
+
 Set these values in `.env` before seeding. Use a unique password with at least 12 characters:
 
 ```env

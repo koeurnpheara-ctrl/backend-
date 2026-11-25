@@ -13,7 +13,7 @@ services:
     environment:
       APP_NAME: "E-commerce Admin"
       APP_ENV: local
-      APP_KEY: ${APP_KEY:-}
+      APP_KEY: "${APP_KEY:?Set APP_KEY in the project .env file}"
       APP_DEBUG: ${APP_DEBUG:-true}
       APP_URL: ${APP_URL:-http://localhost:8000}
       ADMIN_NAME: ${ADMIN_NAME:-Store Administrator}
